@@ -4,7 +4,7 @@ from rest_framework.serializers import (
 	SerializerMethodField,
 	ValidationError,
 	)
-
+from accounts.api.serializers import UserDetailSerializer
 from comments.models import Comment
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth import get_user_model
@@ -75,14 +75,38 @@ class CommentSerializer(ModelSerializer):
 	def get_reply_count(self, obj):
 		if obj.is_parent:
 			return obj.children().count()
-		return 0		
+		return 0
 
-
-class CommentChildSerializer(ModelSerializer):
+class CommentListSerializer(ModelSerializer):
+	url = HyperlinkedIdentityField(
+		view_name = 'comments-api:thread')
+	reply_count = SerializerMethodField()
 	class Meta:
 		model = Comment
 		fields = [
 			'id',
+			'url',
+			# 'content_type',
+			# 'object_id',
+			# 'parent',
+			'content',
+			'reply_count',
+			'timestamp',
+		]
+
+	def get_reply_count(self, obj):
+		if obj.is_parent:
+			return obj.children().count()
+		return 0				
+ 
+
+class CommentChildSerializer(ModelSerializer):
+	user = UserDetailSerializer()
+	class Meta:
+		model = Comment
+		fields = [
+			'id',
+			'user',
 			'content',
 			'timestamp',
 		]
@@ -90,19 +114,34 @@ class CommentChildSerializer(ModelSerializer):
 
 class CommentDetailSerializer(ModelSerializer):
 	reply_count = SerializerMethodField()
+	content_object_url = SerializerMethodField()
 	replies = SerializerMethodField()
+	user = UserDetailSerializer(read_only=True)
 	class Meta:
 		model = Comment
 		fields = [
 			'id',
-			'content_type',
-			'object_id',
+			'user',
+			# 'content_type',
+			# 'object_id',
 			'content',
 			'replies',
 			'timestamp',
 			'reply_count',
-		]		
+			'content_object_url'
+		]	
+		read_only_fields = [
+			# 'content_type',
+			# 'object_id',
+			'reply_count',
+			'replies'
+		]	
 
+	def get_content_object_url(self, obj):
+		try:
+			return obj.content_object.get_api_url()
+		except:
+			return None		
 	def get_replies(self, obj):
 		if obj.is_parent:
 			return CommentChildSerializer(obj.children(), many=True).data
@@ -111,4 +150,13 @@ class CommentDetailSerializer(ModelSerializer):
 	def get_reply_count(self, obj):
 		if obj.is_parent:
 			return obj.children().count()
-		return 0							
+		return 0			
+
+# class CommentEditSerializer(ModelSerializer):
+# 	class Meta:
+# 		model = Comment
+# 		fields = [
+# 			'id',
+# 			'content',
+# 			'timestamp',
+# 		]						

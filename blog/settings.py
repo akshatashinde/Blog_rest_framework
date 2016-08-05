@@ -144,9 +144,30 @@ STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static_cdn")
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), "media_cdn")
 
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        # 'rest_framework.authentication.SessionAuthentication',
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+    ),
+
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.AllowAny',
+    )
+
+    }
+'''
+
+curl -X POST -d "username=akshata&password=sidvitech" http://127.0.0.1:8000/api/auth/token/
 
 
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFrc2hhdGEiLCJ1c2VyX2lkIjoxNSwiZW1haWwiOiJha3NoYXRhc2hpbmRlOTkxQGdtYWlsLmNvbSIsImV4cCI6MTQ3MDM5NzI3NH0.pogYnxAL58H6SpoYYEKe9zDJK1XCGH8pJOYkdUuiw2g
 
+curl -H "Authorization: JWT <eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFrc2hhdGEiLCJ1c2VyX2lkIjoxNSwiZW1haWwiOiJha3NoYXRhc2hpbmRlOTkxQGdtYWlsLmNvbSIsImV4cCI6MTQ3MDM5NzI3NH0.pogYnxAL58H6SpoYYEKe9zDJK1XCGH8pJOYkdUuiw2g>" http://127.0.0.1:8000/api/auth/token/
+'''
 
 
 
