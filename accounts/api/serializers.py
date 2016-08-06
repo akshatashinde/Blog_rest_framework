@@ -110,7 +110,7 @@ class UserLoginSerializer(ModelSerializer):
 				Q(email=email) |
 				Q(username=username)
 			).distinct()
-		user = user.exclude(email_isnull=True).exclude(email_iexact='')
+		# user = user.exclude(email_isnull=True).exclude(email_iexact='')
 		if user.exists() and user.count() ==1:
 			user_obj = user.first()
 		else:

@@ -34,7 +34,12 @@ from .serializers import (
 	PostListSerializer
 	)
 
-class PostCreateUpdateAPIView(CreateAPIView):
+from django.contrib.auth import get_user_model
+
+
+User = get_user_model()
+
+class PostCreateAPIView(CreateAPIView):
 	queryset = Post.objects.all()
 	serializer_class = PostCreateUpdateSerializer
 	# permission_classes = [IsAuthenticated]
@@ -44,7 +49,7 @@ class PostCreateUpdateAPIView(CreateAPIView):
 
 
 
-class PostDetailAPIView(RetrieveAPIView):
+class PostDetailAPIView(RetrieveAPIView, DestroyAPIView):
 	queryset = Post.objects.all()
 	serializer_class = PostDetailSerializer
 	lookup_field = 'slug'

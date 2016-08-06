@@ -10,6 +10,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth import get_user_model
 
 User=get_user_model()
+
 def create_comment_serializer(model_type='post', slug=None, parent_id=None, user=None):
 	class CommentCreateSerializer(ModelSerializer):
 		class Meta:

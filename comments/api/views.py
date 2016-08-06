@@ -35,8 +35,13 @@ from .serializers import (
 	create_comment_serializer
 	)
 
+from django.contrib.auth import get_user_model
+
+User=get_user_model()
+
+
 class CommentCreateAPIView(CreateAPIView):
-	queryset = Post.objects.all()
+	queryset = Comment.objects.all()
 	# serializer_class = PostCreateUpdateSerializer
 	# permission_classes = [IsAuthenticated]
 
